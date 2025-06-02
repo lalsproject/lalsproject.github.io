@@ -241,15 +241,17 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            padding-top: max(20px, var(--safe-area-inset-top));
+            padding-bottom: var(--safe-area-inset-bottom);
         }
 
         .modal-content {
             position: relative;
             background-color: var(--modal-background);
-            margin: 20px auto;
-            padding: 20px;
+            margin: 0 auto;
+            padding: 60px 20px 20px;
             max-width: 800px;
-            max-height: calc(100vh - 40px);
+            max-height: calc(100vh - 40px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
             overflow-y: auto;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
@@ -258,7 +260,7 @@
         .close-button {
             position: absolute;
             right: 20px;
-            top: 20px;
+            top: max(10px, var(--safe-area-inset-top));
             font-size: 32px;
             cursor: pointer;
             color: var(--text-color);
@@ -382,14 +384,17 @@
             .search-container {
                 padding: 0 15px;
             }
+            .modal {
+                padding-top: max(10px, var(--safe-area-inset-top));
+            }
             .modal-content {
-                margin: 10px;
-                padding: 15px;
-                max-height: calc(100vh - 20px);
+                margin: 0 10px;
+                padding: 50px 15px 15px;
+                max-height: calc(100vh - 20px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
             }
             .close-button {
                 right: 15px;
-                top: 15px;
+                top: max(5px, var(--safe-area-inset-top));
                 width: 35px;
                 height: 35px;
                 font-size: 28px;
