@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Buku Lagu Rohani</title>
     <link rel="manifest" href="manifest.json">
     <!-- favicon -->
@@ -26,6 +26,8 @@
             --background-color: #ffffff;
             --card-background: #ffffff;
             --modal-background: #ffffff;
+            --safe-area-inset-top: env(safe-area-inset-top, 0px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         [data-theme="dark"] {
@@ -51,6 +53,8 @@
             color: var(--text-color);
             line-height: 1.6;
             transition: background-color 0.3s ease;
+            padding-top: var(--safe-area-inset-top);
+            padding-bottom: var(--safe-area-inset-bottom);
         }
 
         .header {
@@ -61,6 +65,7 @@
             top: 0;
             z-index: 100;
             width: 100%;
+            padding-top: calc(20px + var(--safe-area-inset-top));
         }
 
         .header-content {
@@ -387,6 +392,7 @@
             right: 0;
             z-index: 100;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            padding-bottom: calc(20px + var(--safe-area-inset-bottom));
         }
 
         .footer-content {
@@ -407,6 +413,15 @@
             }
             .container {
                 padding-bottom: 90px;
+            }
+        }
+
+        @supports (padding: max(0px)) {
+            .header {
+                padding-top: max(20px, var(--safe-area-inset-top));
+            }
+            .footer {
+                padding-bottom: max(20px, var(--safe-area-inset-bottom));
             }
         }
     </style>
