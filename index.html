@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Buku Lagu Rohani</title>
+    <link rel="manifest" href="manifest.json">
+    <!-- favicon -->
+    <link rel="icon" href="icons/icon-192x192.png">
+    <meta name="theme-color" content="#4a90e2">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buku Lagu Rohani">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="apple-touch-startup-image" href="splash/splash.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #2c3e50;
+            --border-color: #e1e8ed;
+            --hover-color: #357abd;
+            --background-color: #ffffff;
+            --card-background: #ffffff;
+            --modal-background: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #64b5f6;
+            --secondary-color: #1a1a1a;
+            --text-color: #ffffff;
+            --border-color: #333333;
+            --hover-color: #90caf9;
+            --background-color: #121212;
+            --card-background: #1e1e1e;
+            --modal-background: #121212;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--card-background);
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.5em;
+            padding: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            background-color: var(--secondary-color);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background-color: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-bottom: 100px;
+        }
+
+        .song-list {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .song-item {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .song-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .song-info {
+            flex: 1;
+        }
+
+        .song-title {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .song-details {
+            display: flex;
+            gap: 15px;
+            color: var(--text-color);
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .song-code {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+        }
+
+        .song-key {
+            color: var(--text-color);
+        }
+
+        .view-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .view-button:hover {
+            background-color: var(--hover-color);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--modal-background);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            height: 100%;
+            padding: 20px;
+            overflow-y: auto;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .close-button {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--text-color);
+            background: var(--card-background);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .close-button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .lyrics-title {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            text-align: center;
+            padding: 0;
+            border-bottom: none;
+        }
+        .lyrics-key {
+            text-align: center;
+            color: #b0b0b0;
+            font-size: 1em;
+            margin-bottom: 18px;
+            font-weight: 400;
+        }
+        .lyrics-section-label {
+            color: #b0b0b0;
+            font-size: 1em;
+            font-weight: 500;
+            margin-bottom: 10px;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .lyrics-verse {
+            margin-bottom: 22px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        .lyrics-verse-number {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: var(--primary-color);
+            min-width: 28px;
+            text-align: right;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .lyrics-lines {
+            margin-left: 0;
+            flex: 1;
+        }
+        .lyrics-line {
+            font-size: 1.08em;
+            color: var(--text-color);
+            margin-bottom: 3px;
+            line-height: 1.7;
+        }
+        .lyrics-refrain-lines {
+            margin-left: 32px;
+        }
+
+        .song-metadata {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .metadata-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .song-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .song-details {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .view-button {
+                width: 100%;
+            }
+
+            .tabs {
+                padding-bottom: 10px;
+            }
+        }
+
+        .footer {
+            background-color: var(--card-background);
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-color);
+            font-size: 0.9em;
+        }
+
+        .footer p {
+            margin: 5px 0;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 600px) {
+            .footer {
+                padding: 15px;
+            }
+            .container {
+                padding-bottom: 90px;
+            }
+        }
+    </style>
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // Add to Home Screen prompt
+        let deferredPrompt;
+        const installButton = document.createElement('button');
+        installButton.style.display = 'none';
+        document.body.appendChild(installButton);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+            installButton.addEventListener('click', () => {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    installButton.style.display = 'none';
+                });
+            });
+        });
+
+        // Handle orientation changes
+        window.addEventListener('orientationchange', () => {
+            // Prevent zoom on orientation change
+            document.body.style.zoom = "100%";
+        });
+
+        // Prevent pull-to-refresh
+        document.body.addEventListener('touchmove', function(e) {
+            if (e.target === document.body) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <div class="header-top">
+            <h1 style="color: var(--primary-color)"><a href="" style="text-decoration: none; color: var(--primary-color);">Buku Lagu Rohani</a></h1>
+            <button class="theme-toggle" id="themeToggle">🌙</button>
+        </div>
+        <div class="tabs" id="bookTabs">
+            <button class="tab active" data-book="KJ">Kidung Jemaat</button>
+            <button class="tab" data-book="KLIK">Kumpulan Lagu Ibadah Kreatif</button>
+            <button class="tab" data-book="NKB">Nyanyian Kemenangan Iman</button>
+            <button class="tab" data-book="NNBT">Nyanyikanlah Nyanyian Baru bagi Tuhan</button>
+        </div>
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-box" placeholder="Cari lagu berdasarkan judul atau kode..." id="searchInput">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="song-list" id="songList"></div>
+    </div>
+
+    <!-- Modal untuk menampilkan lirik -->
+    <div id="lyricsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModal">&times;</span>
+            <div class="lyrics-title" id="modalTitle"></div>
+            <div class="song-metadata" id="modalMetadata"></div>
+            <div class="lyrics-content" id="modalLyrics"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p style="font-size: 0.8em;">&copy; 2025 Yohanes Rakinaung. All rights reserved.</p>
+            <p style="font-size: 0.8em;">Dibuat dengan ❤️ untuk kemuliaan Tuhan</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html> 
