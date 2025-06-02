@@ -7,7 +7,8 @@
     <link rel="manifest" href="manifest.json">
     <!-- favicon -->
     <link rel="icon" href="icons/icon-192x192.png">
-    <meta name="theme-color" content="#4a90e2">
+    <meta name="theme-color" content="##1e1e1e">
+    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -54,11 +55,18 @@
 
         .header {
             background-color: var(--card-background);
-            padding: 20px;
+            padding: 20px 0;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
             z-index: 100;
+            width: 100%;
+        }
+
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .header-top {
@@ -89,6 +97,7 @@
             margin-bottom: 15px;
             overflow-x: auto;
             padding-bottom: 5px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tab {
@@ -112,6 +121,7 @@
             position: relative;
             max-width: 600px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
         .search-box {
@@ -354,6 +364,16 @@
             .tabs {
                 padding-bottom: 10px;
             }
+
+            .header {
+                padding: 15px 0;
+            }
+            .header-content {
+                padding: 0 15px;
+            }
+            .search-container {
+                padding: 0 15px;
+            }
         }
 
         .footer {
@@ -442,15 +462,17 @@
 </head>
 <body>
     <div class="header">
-        <div class="header-top">
-            <h1 style="color: var(--primary-color)"><a href="" style="text-decoration: none; color: var(--primary-color);">Buku Lagu Rohani</a></h1>
-            <button class="theme-toggle" id="themeToggle">🌙</button>
-        </div>
-        <div class="tabs" id="bookTabs">
-            <button class="tab active" data-book="KJ">Kidung Jemaat</button>
-            <button class="tab" data-book="KLIK">Kumpulan Lagu Ibadah Kreatif</button>
-            <button class="tab" data-book="NKB">Nyanyian Kemenangan Iman</button>
-            <button class="tab" data-book="NNBT">Nyanyikanlah Nyanyian Baru bagi Tuhan</button>
+        <div class="header-content">
+            <div class="header-top">
+                <h1 style="color: var(--primary-color)"><a href="" style="text-decoration: none; color: var(--primary-color);">Buku Lagu Rohani</a></h1>
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+            </div>
+            <div class="tabs" id="bookTabs">
+                <button class="tab active" data-book="KJ">Kidung Jemaat</button>
+                <button class="tab" data-book="KLIK">Kumpulan Lagu Ibadah Kreatif</button>
+                <button class="tab" data-book="NKB">Nyanyian Kemenangan Iman</button>
+                <button class="tab" data-book="NNBT">Nyanyikanlah Nyanyian Baru bagi Tuhan</button>
+            </div>
         </div>
         <div class="search-container">
             <span class="search-icon">🔍</span>
