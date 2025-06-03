@@ -53,13 +53,21 @@ function showLyrics(song) {
     currentLyricsIndex = filteredSongs.findIndex(s => s.code === song.code);
 
     // Judul lagu besar di tengah
-    modalTitle.textContent = `${currentBook} ${song.code} ${song.title}`;
+    modalTitle.innerHTML = `<center>${currentBook} ${song.code} ${song.title}</center>`;
     
     // Info nada dan birama
     let keyInfo = '';
-    if (song.keySignature) keyInfo += song.keySignature;
-    if (song.timeSignature) keyInfo += (keyInfo ? ' ' : '') + song.timeSignature;
-    modalMetadata.innerHTML = `<div class=\"lyrics-key\">${keyInfo}</div>`;
+    if (song.keySignature) keyInfo += `<p>Kunci = ${song.keySignature}</p>`;
+    if (song.timeSignature) keyInfo += `<p>Ketukan = ${song.timeSignature}</p><br>`;
+
+    // Tambahkan audio player jika KJ
+    let audioHtml = '';
+    if (currentBook === 'KJ') {
+        let codeNum = song.code.padStart ? song.code.padStart(3, '0') : String(song.code).padStart(3, '0');
+        let audioUrl = `https://media.sabda.org/gema/himne/kj/KJ${codeNum}.mp3`;
+        audioHtml = `<audio id="songAudio" controls style="display:block;margin:0 auto 18px;max-width:100%;width:100%">\n  <source src="${audioUrl}" type="audio/mpeg">\n  Browser Anda tidak mendukung audio player.\n</audio>`;
+    }
+    modalMetadata.innerHTML = `${keyInfo}${audioHtml}`;
     
     // Layout lirik sesuai contoh
     let lyricsHtml = '';
@@ -101,6 +109,11 @@ function closeModal() {
     const modal = document.getElementById('lyricsModal');
     modal.style.display = 'none';
     document.body.style.overflow = 'auto'; // Mengaktifkan kembali scroll pada body
+    // Hapus elemen audio agar audio berhenti
+    const modalMetadata = document.getElementById('modalMetadata');
+    if (modalMetadata) {
+        modalMetadata.innerHTML = '';
+    }
 }
 
 // Event listener untuk tombol close modal
