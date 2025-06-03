@@ -66,6 +66,10 @@ function showLyrics(song) {
         let codeNum = song.code.padStart ? song.code.padStart(3, '0') : String(song.code).padStart(3, '0');
         let audioUrl = `https://media.sabda.org/gema/himne/kj/KJ${codeNum}.mp3`;
         audioHtml = `<audio id="songAudio" controls style="display:block;margin:0 auto 18px;max-width:100%;width:100%">\n  <source src="${audioUrl}" type="audio/mpeg">\n  Browser Anda tidak mendukung audio player.\n</audio>`;
+    } else if(currentBook === 'NKB') {
+        let codeNum = song.code.padStart ? song.code.padStart(3, '0') : String(song.code).padStart(3, '0');
+        let audioUrl = `https://media.sabda.org/gema/himne/nkb/NKB${codeNum}.mp3`;
+        audioHtml = `<audio id="songAudio" controls style="display:block;margin:0 auto 18px;max-width:100%;width:100%">\n  <source src="${audioUrl}" type="audio/mpeg">\n  Browser Anda tidak mendukung audio player.\n</audio>`;
     }
     modalMetadata.innerHTML = `${keyInfo}${audioHtml}`;
     
