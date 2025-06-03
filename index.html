@@ -276,7 +276,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: var(--modal-background);
             z-index: 1000;
             padding-top: max(20px, var(--safe-area-inset-top));
             padding-bottom: var(--safe-area-inset-bottom);
@@ -285,17 +285,16 @@
         .modal-content {
             position: relative;
             background-color: var(--modal-background);
-            margin: 0 auto;
+            margin: 0;
             padding: 60px 20px 20px;
-            max-width: 800px;
-            max-height: calc(100vh - 40px - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+            width: 100%;
+            height: 100%;
             overflow-y: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: none;
         }
 
         .close-button {
-            position: absolute;
+            position: fixed;
             right: 20px;
             top: max(10px, var(--safe-area-inset-top));
             font-size: 32px;
@@ -438,50 +437,6 @@
             }
         }
 
-        .footer {
-            background-color: var(--card-background);
-            padding: 20px;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            padding-bottom: calc(20px + var(--safe-area-inset-bottom));
-        }
-
-        .footer-content {
-            max-width: 800px;
-            margin: 0 auto;
-            color: var(--text-color);
-            font-size: 0.9em;
-        }
-
-        .footer p {
-            margin: 5px 0;
-            opacity: 0.8;
-        }
-
-        @media (max-width: 600px) {
-            .footer {
-                padding: 15px;
-            }
-            .container {
-                padding-bottom: 90px;
-            }
-        }
-
-        @supports (padding: max(0px)) {
-            .header {
-                padding-top: max(20px, var(--safe-area-inset-top));
-            }
-            .footer {
-                padding-bottom: max(20px, var(--safe-area-inset-bottom));
-            }
-        }
-
         .back-to-top {
             position: fixed;
             bottom: 80px;
@@ -524,69 +479,71 @@
         }
     </style>
     <script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful');
-                    })
-                    .catch(err => {
-                        console.log('ServiceWorker registration failed: ', err);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Register Service Worker
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(registration => {
+                            console.log('ServiceWorker registration successful');
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+            }
+
+            // Add to Home Screen prompt
+            let deferredPrompt;
+            const installButton = document.createElement('button');
+            installButton.style.display = 'none';
+            document.body.appendChild(installButton);
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installButton.style.display = 'block';
+                installButton.addEventListener('click', () => {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null;
+                        installButton.style.display = 'none';
                     });
-            });
-        }
-
-        // Add to Home Screen prompt
-        let deferredPrompt;
-        const installButton = document.createElement('button');
-        installButton.style.display = 'none';
-        document.body.appendChild(installButton);
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installButton.style.display = 'block';
-            installButton.addEventListener('click', () => {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    }
-                    deferredPrompt = null;
-                    installButton.style.display = 'none';
                 });
             });
-        });
 
-        // Handle orientation changes
-        window.addEventListener('orientationchange', () => {
-            // Prevent zoom on orientation change
-            document.body.style.zoom = "100%";
-        });
+            // Handle orientation changes
+            window.addEventListener('orientationchange', () => {
+                // Prevent zoom on orientation change
+                document.body.style.zoom = "100%";
+            });
 
-        // Prevent pull-to-refresh
-        document.body.addEventListener('touchmove', function(e) {
-            if (e.target === document.body) {
-                e.preventDefault();
-            }
-        }, { passive: false });
+            // Prevent pull-to-refresh
+            document.body.addEventListener('touchmove', function(e) {
+                if (e.target === document.body) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
 
-        // Back to Top Button
-        const backToTopButton = document.getElementById('backToTop');
-        
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
-            }
-        });
+            // Back to Top Button
+            const backToTopButton = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
 
-        backToTopButton.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             });
         });
     </script>
@@ -626,13 +583,6 @@
     </div>
 
     <button id="backToTop" class="back-to-top" title="Kembali ke Atas">↑</button>
-
-    <footer class="footer">
-        <div class="footer-content">
-            <p style="font-size: 0.8em;">&copy; 2025 Yohanes Rakinaung. All rights reserved.</p>
-            <p style="font-size: 0.8em;">Dibuat dengan ❤️ untuk kemuliaan Tuhan</p>
-        </div>
-    </footer>
 
     <script src="app.js"></script>
 </body>
