@@ -52,64 +52,82 @@ function showLyrics(song) {
     // Simpan index lagu yang sedang dibuka
     currentLyricsIndex = filteredSongs.findIndex(s => s.code === song.code);
 
-    // Judul lagu besar di tengah
-    modalTitle.innerHTML = `<center>${currentBook} ${song.code} ${song.title}</center>`;
+    // Judul lagu
+    modalTitle.textContent = `${currentBook} ${song.code} - ${song.title}`;
     
     // Info nada dan birama
-    let keyInfo = '';
-    if (song.keySignature) keyInfo += `<p>Kunci = ${song.keySignature}</p>`;
-    if (song.timeSignature) keyInfo += `<p>Ketukan = ${song.timeSignature}</p><br>`;
-
-    // Tambahkan audio player jika KJ
-    let audioHtml = '';
-    if (currentBook === 'KJ') {
-        let codeNum = song.code.padStart ? song.code.padStart(3, '0') : String(song.code).padStart(3, '0');
-        let audioUrl = `https://media.sabda.org/gema/himne/kj/KJ${codeNum}.mp3`;
-        audioHtml = `<audio id="songAudio" controls style="display:block;margin:0 auto 18px;max-width:100%;width:100%">\n  <source src="${audioUrl}" type="audio/mpeg">\n  Browser Anda tidak mendukung audio player.\n</audio>`;
-    } else if(currentBook === 'NKB') {
-        let codeNum = song.code.padStart ? song.code.padStart(3, '0') : String(song.code).padStart(3, '0');
-        let audioUrl = `https://media.sabda.org/gema/himne/nkb/NKB${codeNum}.mp3`;
-        audioHtml = `<audio id="songAudio" controls style="display:block;margin:0 auto 18px;max-width:100%;width:100%">\n  <source src="${audioUrl}" type="audio/mpeg">\n  Browser Anda tidak mendukung audio player.\n</audio>`;
-    } else if(currentBook === 'PKJ') {
-        let codeNum = song.code.padStart ? song.code.padStart(3, '0') : String(song.code).padStart(3, '0');
-        let audioUrl = `https://media.sabda.org/gema/himne/pkj/PKJ${codeNum}.mp3`;
-        audioHtml = `<audio id="songAudio" controls style="display:block;margin:0 auto 18px;max-width:100%;width:100%">\n  <source src="${audioUrl}" type="audio/mpeg">\n  Browser Anda tidak mendukung audio player.\n</audio>`;
+    let metadataHtml = '';
+    if (song.keySignature) {
+        metadataHtml += `<div class="metadata-item">🎵 ${song.keySignature}</div>`;
     }
-    modalMetadata.innerHTML = `${keyInfo}${audioHtml}`;
+    if (song.timeSignature) {
+        metadataHtml += `<div class="metadata-item">⏱️ ${song.timeSignature}</div>`;
+    }
+
+    // Tambahkan audio player jika tersedia
+    if (currentBook === 'KJ' || currentBook === 'NKB' || currentBook === 'PKJ') {
+        let codeNum = String(song.code).padStart(3, '0');
+        let audioUrl = `https://media.sabda.org/gema/himne/${currentBook.toLowerCase()}/${currentBook}${codeNum}.mp3`;
+        metadataHtml += `
+            <div class="metadata-item" style="width: 100%; margin-top: 16px;">
+                <audio controls style="width: 100%;">
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    Browser Anda tidak mendukung audio player.
+                </audio>
+            </div>
+        `;
+    } else if (currentBook === 'NNBT') {
+        let codeNum = String(song.code).padStart(1, '0');
+        let audioUrl = `https://boafiles.kejut.com/addon/audio/songs/v2/NNBT_${codeNum}.mp3`;
+        metadataHtml += `
+            <div class="metadata-item" style="width: 100%; margin-top: 16px;">
+                <audio controls style="width: 100%;">
+                    <source src="${audioUrl}" type="audio/mpeg">
+                    Browser Anda tidak mendukung audio player.
+                </audio>
+            </div>
+        `;
+    }
     
-    // Layout lirik sesuai contoh
+    modalMetadata.innerHTML = metadataHtml;
+    
+    // Layout lirik
     let lyricsHtml = '';
     song.lyrics.forEach((section, sectionIdx) => {
         // Label versi jika ada lebih dari satu section
         if (song.lyrics.length > 1) {
-            lyricsHtml += `<div class=\"lyrics-section-label\">VERSI ${sectionIdx + 1}</div>`;
+            lyricsHtml += `<div class="lyrics-section-label">VERSI ${sectionIdx + 1}</div>`;
         }
+        
         section.verses.forEach((verse, verseIdx) => {
             if (verse.kind === 'REFRAIN') {
-                lyricsHtml += `<div class=\"lyrics-section-label\">Refrein</div>`;
-                lyricsHtml += `<div class=\"lyrics-verse\"><div class=\"lyrics-lines lyrics-refrain-lines\">`;
-                verse.lines.forEach(line => {
-                    lyricsHtml += `<div class=\"lyrics-line\">${line}</div>`;
-                });
-                lyricsHtml += `</div></div>`;
+                lyricsHtml += `
+                    <div class="lyrics-section-label">Refrein</div>
+                    <div class="lyrics-verse">
+                        <div class="lyrics-lines lyrics-refrain-lines">
+                            ${verse.lines.map(line => `<div class="lyrics-line">${line}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
             } else {
-                // Nomor bait dan lirik dalam satu baris flex
-                lyricsHtml += `<div class=\"lyrics-verse\">`;
-                lyricsHtml += `<div class=\"lyrics-verse-number\">${verse.ordering}</div>`;
-                lyricsHtml += `<div class=\"lyrics-lines\">`;
-                verse.lines.forEach(line => {
-                    lyricsHtml += `<div class=\"lyrics-line\">${line}</div>`;
-                });
-                lyricsHtml += `</div></div>`;
+                lyricsHtml += `
+                    <div class="lyrics-verse">
+                        <div class="lyrics-verse-number">${verse.ordering}</div>
+                        <div class="lyrics-lines">
+                            ${verse.lines.map(line => `<div class="lyrics-line">${line}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
             }
         });
     });
+    
     modalLyrics.innerHTML = lyricsHtml;
     modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // Mencegah scroll pada body
+    document.body.style.overflow = 'hidden';
 
-    // Terapkan ukuran font lirik dari localStorage
-    applyLyricsFontSize();
+    // Scroll ke atas modal
+    modal.scrollTop = 0;
 }
 
 // Fungsi untuk menutup modal

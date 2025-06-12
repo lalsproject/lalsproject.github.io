@@ -1,23 +1,23 @@
-const CACHE_NAME = 'buku-lagu-v1';
+const CACHE_NAME = 'bukulagu-v1';
 const urlsToCache = [
     '/',
-    '/index.html',
+    '/index2.html',
     '/app.js',
     '/manifest.json',
     '/KJ.json',
-    '/KLIK.json',
     '/NKB.json',
-    '/NNBT.json',
     '/PKJ.json',
+    '/KLIK.json',
+    '/NNBT.json',
+    '/icons/icon-192x192.png',
+    '/icons/icon-512x512.png',
     '/icons/icon-72x72.png',
     '/icons/icon-96x96.png',
     '/icons/icon-128x128.png',
     '/icons/icon-144x144.png',
     '/icons/icon-152x152.png',
-    '/icons/icon-192x192.png',
     '/icons/icon-384x384.png',
-    '/icons/icon-512x512.png',
-    '/icons/maskable-icon.png',
+    '/icons/icon-maskable-icon.png',
     '/splash/splash.png',
     'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap'
 ];

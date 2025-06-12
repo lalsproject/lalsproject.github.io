@@ -649,19 +649,73 @@
             document.body.appendChild(installButton);
 
             window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
+                // Simpan event untuk digunakan nanti
                 deferredPrompt = e;
-                installButton.style.display = 'block';
-                installButton.addEventListener('click', () => {
+                
+                // Tampilkan banner instalasi
+                const banner = document.createElement('div');
+                banner.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--card-background);
+                    padding: 16px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    border: 1px solid var(--border-color);
+                `;
+                
+                banner.innerHTML = `
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">Pasang Aplikasi</div>
+                        <div style="font-size: 0.9em; opacity: 0.8;">Pasang Buku Lagu Rohani di perangkat Anda untuk akses lebih cepat</div>
+                    </div>
+                    <button id="installApp" style="
+                        background: var(--primary-color);
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 500;
+                    ">Pasang</button>
+                    <button id="closeBanner" style="
+                        background: none;
+                        border: none;
+                        color: var(--text-color);
+                        cursor: pointer;
+                        padding: 4px;
+                        opacity: 0.6;
+                    ">✕</button>
+                `;
+                
+                document.body.appendChild(banner);
+                
+                // Event listener untuk tombol install
+                document.getElementById('installApp').addEventListener('click', async () => {
+                    banner.remove();
                     deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            console.log('User accepted the install prompt');
-                        }
-                        deferredPrompt = null;
-                        installButton.style.display = 'none';
-                    });
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
                 });
+                
+                // Event listener untuk tombol close banner
+                document.getElementById('closeBanner').addEventListener('click', () => {
+                    banner.remove();
+                });
+            });
+
+            // Event listener untuk setelah instalasi
+            window.addEventListener('appinstalled', (evt) => {
+                console.log('Aplikasi berhasil diinstal');
             });
 
             // Handle orientation changes
